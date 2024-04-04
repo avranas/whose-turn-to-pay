@@ -1,3 +1,4 @@
+import bodyParser from "body-parser";
 import express, {
   type Request,
   type Response,
@@ -5,34 +6,22 @@ import express, {
 } from "express";
 import path from "path";
 import { v4 as uuidv4 } from "uuid";
+import { HttpError, OrderItem, DynamoDBParams } from "./types.ts";
+
+const AWS = require("aws-sdk");
+
 require("dotenv").config();
 
 const port = process.env.PORT || 3000;
 const nodeEnv = process.env.NODE_ENV;
 const router = express.Router();
 const app = express();
-const AWS = require("aws-sdk");
 const docClient = new AWS.DynamoDB.DocumentClient();
-
-interface HttpError {
-  status: number;
-  message: string;
-}
-
-interface OrderItem {
-  id: string;
-  time_created: number;
-  bob_cost: number;
-  jeremy_cost: number;
-}
-
-interface DynamoDBParams {
-  TableName: string;
-  Item: OrderItem;
-}
 
 // Serve static files from the React frontend app
 app.use(express.static(path.join(__dirname, "dist")));
+
+app.use(bodyParser.json());
 
 // Connect to DynamoDB database
 AWS.config.update({

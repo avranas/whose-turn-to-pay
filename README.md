@@ -1,6 +1,6 @@
 # Whose Turn To Pay
 
-A Bertram Labs Coding Challenge completed by Alex Vranas
+A Bertram Labs coding challenge completed, and slightly over-engineered by Alex Vranas
 
 ## Features
 
@@ -22,6 +22,7 @@ Feature 2 description
 6. ESLint
 7. Webpack
 8. Axios
+9. DynamoDB
 
 ## Starting Your Local Dev Environment
 
