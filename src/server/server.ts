@@ -5,8 +5,7 @@ import express, {
   type NextFunction,
 } from "express";
 import path from "path";
-import { v4 as uuidv4 } from "uuid";
-import { HttpError, OrderItem, DynamoDBParams } from "./types.ts";
+import { HttpError } from "./types";
 
 const AWS = require("aws-sdk");
 
@@ -14,9 +13,9 @@ require("dotenv").config();
 
 const port = process.env.PORT || 3000;
 const nodeEnv = process.env.NODE_ENV;
-const router = express.Router();
+const apiRouter = express.Router();
 const app = express();
-const docClient = new AWS.DynamoDB.DocumentClient();
+
 
 // Serve static files from the React frontend app
 app.use(express.static(path.join(__dirname, "dist")));
@@ -31,35 +30,39 @@ AWS.config.update({
 });
 
 // All routes go through the API router
-app.use("/api", router);
+app.use("/api", apiRouter);
 
-router.get("/", (req: Request, res: Response) => {
+// order route goes through api route
+apiRouter.use("/order", require("./orderRoute"));
+
+
+apiRouter.get("/", (req: Request, res: Response) => {
   return res.send("Hello World!");
 });
 
 // Test that DynamoDB connection is working
-router.get(
-  "/add-order",
-  async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const tableName = "Orders";
-      const item: OrderItem = {
-        id: uuidv4(),
-        time_created: Date.now(),
-        bob_cost: 1221,
-        jeremy_cost: 509,
-      };
-      const params: DynamoDBParams = {
-        TableName: tableName,
-        Item: item,
-      };
-      await docClient.put(params).promise();
-      return res.status(200).send("Order added");
-    } catch (err) {
-      return next(err);
-    }
-  },
-);
+// router.get(
+//   "/add-order",
+//   async (req: Request, res: Response, next: NextFunction) => {
+//     try {
+//       const tableName = "Orders";
+//       const item: OrderItem = {
+//         id: uuidv4(),
+//         time_created: Date.now(),
+//         bob_cost: 1221,
+//         jeremy_cost: 509,
+//       };
+//       const params: DynamoDBParams = {
+//         TableName: tableName,
+//         Item: item,
+//       };
+//       await docClient.put(params).promise();
+//       return res.status(200).send("Order added");
+//     } catch (err) {
+//       return next(err);
+//     }
+//   },
+// );
 
 // eslint-disable-next-line
 app.use((err: HttpError, req: Request, res: Response, next: NextFunction) => {

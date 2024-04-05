@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import orderController from "./orderController";
 const express = require("express");
 
-export const router = express.Router();
+const router = express.Router();
 
 // Get all orders
 router.get("/", orderController.getAllOrders, (req: Request, res: Response) => {
@@ -10,24 +10,28 @@ router.get("/", orderController.getAllOrders, (req: Request, res: Response) => {
 });
 
 // Create an order
-router.get("/", orderController.createOrder, (req: Request, res: Response) => {
+router.post("/", orderController.createOrder, (req: Request, res: Response) => {
   return res.send("Order #" + res.locals.orderId + " created");
 });
 
 // Update an order
-router.get(
+router.put(
   "/:id",
+  orderController.checkIfOrderIdExists,
   orderController.updateOrder,
   (req: Request, res: Response) => {
-    return res.send("Order #" + req.params.id + " created");
+    return res.send("Order #" + req.params.id + " updated");
   },
 );
 
 // Delete an order
-router.get(
+router.delete(
   "/:id",
+  orderController.checkIfOrderIdExists,
   orderController.deleteOrder,
   (req: Request, res: Response) => {
     return res.send("Order #" + req.params.id + " deleted");
   },
 );
+
+module.exports = router;

@@ -2,26 +2,55 @@ import { NextFunction, Request, RequestHandler, Response } from "express";
 import AWS from "aws-sdk";
 import { v4 as uuidv4 } from "uuid";
 import { HttpError } from "./types";
-import { DeleteItemInput } from "aws-sdk/clients/dynamodb";
+import DynamoDB, {
+  PutItemInput,
+  ScanInput,
+} from "aws-sdk/clients/dynamodb";
 
 const db = new AWS.DynamoDB.DocumentClient();
 const tableName = "Orders";
 
 interface OrderController {
+  checkIfOrderIdExists: RequestHandler;
   getAllOrders: RequestHandler;
   createOrder: RequestHandler;
   updateOrder: RequestHandler;
   deleteOrder: RequestHandler;
 }
 
+// Throw an error if the object doesn't exist
 export const orderController: OrderController = {
+  checkIfOrderIdExists: async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) => {
+    try {
+      const getParams: DynamoDB.DocumentClient.GetItemInput = {
+        TableName: tableName,
+        Key: { id: req.params.id },
+      };
+      const getResult = await db.get(getParams).promise();
+      // DynamoDB will return an empty object if it can't find the item
+      if (!getResult.Item) {
+        const error: HttpError = {
+          status: 400,
+          message: "An Order with that ID doesn't exist",
+        };
+        throw error;
+      }
+      return next();
+    } catch (err) {
+      return next(err);
+    }
+  },
   getAllOrders: async (
     req: Request,
     res: Response,
     next: NextFunction,
   ): Promise<void> => {
     try {
-      const params = {
+      const params: ScanInput = {
         TableName: tableName,
       };
       const data = await db.scan(params).promise();
@@ -60,13 +89,12 @@ export const orderController: OrderController = {
         }
         item[field] = req.body[field];
       }
-      const id = uuidv4();
-      const params = {
+      const params: PutItemInput = {
         TableName: tableName,
         Item: item,
       };
       await db.put(params).promise();
-      res.locals.orderId = id;
+      res.locals.orderId = item.id;
       return next();
     } catch (err) {
       return next(err);
@@ -86,7 +114,7 @@ export const orderController: OrderController = {
         values[`:${key}`] = req.body[key];
         names[`#${key}`] = key;
       });
-      const params = {
+      const putParams: DynamoDB.DocumentClient.UpdateItemInput = {
         TableName: tableName,
         Key: { id: req.params.id },
         UpdateExpression: `set ${updateExpression.join(", ")}`,
@@ -94,8 +122,8 @@ export const orderController: OrderController = {
         ExpressionAttributeNames: names,
         ReturnValues: "UPDATED_NEW",
       };
-      const result = await db.update(params).promise();
-      res.locals.updatedOrder = result.Attributes;
+      const putResult = await db.update(putParams).promise();
+      res.locals.updatedOrder = putResult.Attributes;
       return next();
     } catch (err) {
       return next(err);
@@ -107,9 +135,9 @@ export const orderController: OrderController = {
     next: NextFunction,
   ): Promise<void> => {
     try {
-      const params: DeleteItemInput = {
+      const params: DynamoDB.DocumentClient.DeleteItemInput = {
         TableName: tableName,
-        Key: { id: { S: req.params.id } },
+        Key: { id: req.params.id },
       };
       await db.delete(params).promise();
       res.locals.id = req.params.id;

@@ -8,8 +8,6 @@
     "noImplicitAny": true,
     "allowSyntheticDefaultImports": true,
     "strict": true,
-    "noEmit": true,
-    "allowImportingTsExtensions": true
   },
   "include": ["src/**/*"]
 }
