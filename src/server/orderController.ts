@@ -1,7 +1,7 @@
 import { NextFunction, Request, RequestHandler, Response } from "express";
 import AWS from "aws-sdk";
 import { v4 as uuidv4 } from "uuid";
-import { Cost, Item } from "./types";
+import { Cost, Item } from "../types";
 import DynamoDB, { PutItemInput, ScanInput } from "aws-sdk/clients/dynamodb";
 import { batchValidateObj, createError, validateObj } from "./util";
 
@@ -14,6 +14,15 @@ interface OrderController {
   createOrder: RequestHandler;
   updateOrder: RequestHandler;
   deleteOrder: RequestHandler;
+}
+
+// Returns true if whoPaid is in the costs array, false otherwise
+function whoPaidIsInCosts(whoPaid: string, costs: Array<Cost>): boolean {
+  let foundWhoPaid = false;
+  costs.forEach((cost: Cost) => {
+    if (cost.name === whoPaid) foundWhoPaid = true;
+  });
+  return foundWhoPaid;
 }
 
 // Throw an error if the object doesn't exist
@@ -62,7 +71,21 @@ export const orderController: OrderController = {
     next: NextFunction,
   ): Promise<void> => {
     try {
-      const errors = batchValidateObj(req.body.costs, "costs", [
+      const { costs, who_paid } = req.body;
+      const error = validateObj(req.body, [
+        {
+          key: "costs",
+          type: "object",
+        },
+        {
+          key: "who_paid",
+          type: "string",
+        },
+      ]);
+      if (error !== "") {
+        throw createError(400, "Error in the the request body: " + error);
+      }
+      const errors = batchValidateObj(costs, "costs", [
         {
           key: "amount",
           type: "number",
@@ -78,10 +101,18 @@ export const orderController: OrderController = {
           "Error in the costs property of the request body: " + errors,
         );
       }
+      // Throw an error if who_paid is not included in the list of costs
+      if (!whoPaidIsInCosts(who_paid, costs)) {
+        throw createError(
+          400,
+          who_paid + " is not included in the list of costs",
+        );
+      }
       const item: Item = {
         id: uuidv4(),
         time_created: Date.now(),
-        costs: req.body.costs,
+        costs,
+        who_paid,
       };
       const params: PutItemInput = {
         TableName: tableName,
@@ -99,6 +130,7 @@ export const orderController: OrderController = {
     res: Response,
     next: NextFunction,
   ): Promise<void> => {
+    const { amount, name, who_paid } = req.body;
     try {
       const error = validateObj(req.body, [
         {
@@ -109,11 +141,14 @@ export const orderController: OrderController = {
           key: "name",
           type: "string",
         },
+        {
+          key: "who_paid",
+          type: "string",
+        },
       ]);
       if (error !== "") {
         throw createError(400, "Error in the the request body: " + error);
       }
-      const { amount, name } = req.body;
       let updated = false;
       const newCosts = res.locals.item.costs.map((cost: Cost) => {
         if (cost.name === name) {
@@ -122,18 +157,26 @@ export const orderController: OrderController = {
         }
         return cost;
       });
+      if (who_paid !== res.locals.item.who_paid) updated = true;
+      if (!whoPaidIsInCosts(who_paid, newCosts)) {
+        throw createError(
+          400,
+          who_paid + " is not included in the updated list of costs",
+        );
+      }
       if (!updated) {
         throw createError(
           400,
-          "Unable to find any matching names. No update has taken place",
+          "Unable to find anything to update",
         );
       }
       const params: DynamoDB.DocumentClient.UpdateItemInput = {
         TableName: tableName,
         Key: { id: req.params.id },
-        UpdateExpression: "set costs = :costs",
+        UpdateExpression: "set costs = :costs, who_paid = :whoPaid",
         ExpressionAttributeValues: {
           ":costs": newCosts,
+          ":whoPaid": who_paid,
         },
       };
       const putResult = await db.update(params).promise();

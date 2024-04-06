@@ -3,31 +3,23 @@ export interface HttpError {
   message: string;
 }
 
-export interface OrderItem {
-  id: string;
-  time_created: number;
-  bob_cost: number;
-  jeremy_cost: number;
-}
-
-export interface DynamoDBParams {
-  TableName: string;
-  Item: OrderItem;
-}
-
 export interface Cost {
   name: string;
   amount: number;
 }
-
-export interface Item {
-  [key: string]: any;
+export interface OrderData {
   id: string;
   time_created: number;
   costs: Array<Cost>;
+  who_paid: string;
+}
+
+export interface Item extends OrderData{
+  [key: string]: any;
 }
 
 export interface Property {
   key: string;
   type: string;
 }
+

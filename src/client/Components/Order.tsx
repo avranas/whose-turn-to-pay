@@ -1,5 +1,5 @@
 import React from "react";
-import { OrderData } from "../types";
+import { OrderData } from "../../types";
 
 interface OrderProps {
   order: OrderData;

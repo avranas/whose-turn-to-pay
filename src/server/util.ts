@@ -1,4 +1,4 @@
-import { HttpError, Property } from "./types";
+import { HttpError, Property } from "../types";
 
 export function createError(status: number, message: string): HttpError {
   return { status, message };

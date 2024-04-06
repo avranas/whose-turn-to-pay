@@ -5,7 +5,7 @@ import express, {
   type NextFunction,
 } from "express";
 import path from "path";
-import { HttpError } from "./types";
+import { HttpError } from "../types";
 
 const AWS = require("aws-sdk");
 
