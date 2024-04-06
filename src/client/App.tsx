@@ -1,12 +1,13 @@
 import axios from "axios";
 import React, { useEffect } from "react";
 import { createRoot } from "react-dom/client";
+import OrderList from "./Components/OrderList";
 
 const App = () => {
   useEffect(() => {
     async function contactBackend() {
       try {
-        const res = await axios.get("/api");
+        const res = await axios.get("/api/order");
         console.log(res.data);
       } catch (err) {
         console.log(err);
@@ -18,6 +19,7 @@ const App = () => {
   return (
     <div>
       <h1>Hello world</h1>
+      <OrderList />
     </div>
   );
 };

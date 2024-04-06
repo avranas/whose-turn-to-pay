@@ -11,13 +11,13 @@ router.get("/", orderController.getAllOrders, (req: Request, res: Response) => {
 
 // Create an order
 router.post("/", orderController.createOrder, (req: Request, res: Response) => {
-  return res.send("Order #" + res.locals.orderId + " created");
+  return res.status(201).send("Order #" + res.locals.orderId + " created");
 });
 
 // Update an order
 router.put(
   "/:id",
-  orderController.checkIfOrderIdExists,
+  orderController.checkIfOrderExists,
   orderController.updateOrder,
   (req: Request, res: Response) => {
     return res.send("Order #" + req.params.id + " updated");
@@ -27,7 +27,7 @@ router.put(
 // Delete an order
 router.delete(
   "/:id",
-  orderController.checkIfOrderIdExists,
+  orderController.checkIfOrderExists,
   orderController.deleteOrder,
   (req: Request, res: Response) => {
     return res.send("Order #" + req.params.id + " deleted");

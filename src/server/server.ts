@@ -16,7 +16,6 @@ const nodeEnv = process.env.NODE_ENV;
 const apiRouter = express.Router();
 const app = express();
 
-
 // Serve static files from the React frontend app
 app.use(express.static(path.join(__dirname, "dist")));
 
@@ -35,34 +34,9 @@ app.use("/api", apiRouter);
 // order route goes through api route
 apiRouter.use("/order", require("./orderRoute"));
 
-
 apiRouter.get("/", (req: Request, res: Response) => {
   return res.send("Hello World!");
 });
-
-// Test that DynamoDB connection is working
-// router.get(
-//   "/add-order",
-//   async (req: Request, res: Response, next: NextFunction) => {
-//     try {
-//       const tableName = "Orders";
-//       const item: OrderItem = {
-//         id: uuidv4(),
-//         time_created: Date.now(),
-//         bob_cost: 1221,
-//         jeremy_cost: 509,
-//       };
-//       const params: DynamoDBParams = {
-//         TableName: tableName,
-//         Item: item,
-//       };
-//       await docClient.put(params).promise();
-//       return res.status(200).send("Order added");
-//     } catch (err) {
-//       return next(err);
-//     }
-//   },
-// );
 
 // eslint-disable-next-line
 app.use((err: HttpError, req: Request, res: Response, next: NextFunction) => {

@@ -14,3 +14,20 @@ export interface DynamoDBParams {
   TableName: string;
   Item: OrderItem;
 }
+
+export interface Cost {
+  name: string;
+  amount: number;
+}
+
+export interface Item {
+  [key: string]: any;
+  id: string;
+  time_created: number;
+  costs: Array<Cost>;
+}
+
+export interface Property {
+  key: string;
+  type: string;
+}

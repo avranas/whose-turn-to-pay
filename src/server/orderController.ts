@@ -1,17 +1,15 @@
 import { NextFunction, Request, RequestHandler, Response } from "express";
 import AWS from "aws-sdk";
 import { v4 as uuidv4 } from "uuid";
-import { HttpError } from "./types";
-import DynamoDB, {
-  PutItemInput,
-  ScanInput,
-} from "aws-sdk/clients/dynamodb";
+import { Cost, Item } from "./types";
+import DynamoDB, { PutItemInput, ScanInput } from "aws-sdk/clients/dynamodb";
+import { batchValidateObj, createError, validateObj } from "./util";
 
 const db = new AWS.DynamoDB.DocumentClient();
 const tableName = "Orders";
 
 interface OrderController {
-  checkIfOrderIdExists: RequestHandler;
+  checkIfOrderExists: RequestHandler;
   getAllOrders: RequestHandler;
   createOrder: RequestHandler;
   updateOrder: RequestHandler;
@@ -19,8 +17,9 @@ interface OrderController {
 }
 
 // Throw an error if the object doesn't exist
+// Sets res.locals.item equal to the retrieved item
 export const orderController: OrderController = {
-  checkIfOrderIdExists: async (
+  checkIfOrderExists: async (
     req: Request,
     res: Response,
     next: NextFunction,
@@ -33,12 +32,9 @@ export const orderController: OrderController = {
       const getResult = await db.get(getParams).promise();
       // DynamoDB will return an empty object if it can't find the item
       if (!getResult.Item) {
-        const error: HttpError = {
-          status: 400,
-          message: "An Order with that ID doesn't exist",
-        };
-        throw error;
+        throw createError(400, "An order with that ID doesn't exist");
       }
+      res.locals.item = getResult.Item;
       return next();
     } catch (err) {
       return next(err);
@@ -66,29 +62,27 @@ export const orderController: OrderController = {
     next: NextFunction,
   ): Promise<void> => {
     try {
-      const item: { [key: string]: any; id: string; time_created: number } = {
+      const errors = batchValidateObj(req.body.costs, "costs", [
+        {
+          key: "amount",
+          type: "number",
+        },
+        {
+          key: "name",
+          type: "string",
+        },
+      ]);
+      if (errors !== "") {
+        throw createError(
+          400,
+          "Error in the costs property of the request body: " + errors,
+        );
+      }
+      const item: Item = {
         id: uuidv4(),
         time_created: Date.now(),
+        costs: req.body.costs,
       };
-      const fields = [
-        "bob_cost",
-        "jeremy_cost",
-        "coworker_a_cost",
-        "coworker_b_cost",
-        "coworker_c_cost",
-        "coworker_d_cost",
-        "coworker_e_cost",
-      ];
-      for (const field of fields) {
-        if (!(field in req.body)) {
-          const error: HttpError = {
-            status: 400,
-            message: field + " is missing from the request body",
-          };
-          throw error;
-        }
-        item[field] = req.body[field];
-      }
       const params: PutItemInput = {
         TableName: tableName,
         Item: item,
@@ -106,23 +100,43 @@ export const orderController: OrderController = {
     next: NextFunction,
   ): Promise<void> => {
     try {
-      const updateExpression: Array<string> = [];
-      const values: { [key: string]: any } = {};
-      const names: { [key: string]: string } = {};
-      Object.keys(req.body).forEach((key) => {
-        updateExpression.push(`#${key} = :${key}`);
-        values[`:${key}`] = req.body[key];
-        names[`#${key}`] = key;
+      const error = validateObj(req.body, [
+        {
+          key: "amount",
+          type: "number",
+        },
+        {
+          key: "name",
+          type: "string",
+        },
+      ]);
+      if (error !== "") {
+        throw createError(400, "Error in the the request body: " + error);
+      }
+      const { amount, name } = req.body;
+      let updated = false;
+      const newCosts = res.locals.item.costs.map((cost: Cost) => {
+        if (cost.name === name) {
+          cost.amount = amount;
+          updated = true;
+        }
+        return cost;
       });
-      const putParams: DynamoDB.DocumentClient.UpdateItemInput = {
+      if (!updated) {
+        throw createError(
+          400,
+          "Unable to find any matching names. No update has taken place",
+        );
+      }
+      const params: DynamoDB.DocumentClient.UpdateItemInput = {
         TableName: tableName,
         Key: { id: req.params.id },
-        UpdateExpression: `set ${updateExpression.join(", ")}`,
-        ExpressionAttributeValues: values,
-        ExpressionAttributeNames: names,
-        ReturnValues: "UPDATED_NEW",
+        UpdateExpression: "set costs = :costs",
+        ExpressionAttributeValues: {
+          ":costs": newCosts,
+        },
       };
-      const putResult = await db.update(putParams).promise();
+      const putResult = await db.update(params).promise();
       res.locals.updatedOrder = putResult.Attributes;
       return next();
     } catch (err) {
@@ -149,3 +163,34 @@ export const orderController: OrderController = {
 };
 
 export default orderController;
+
+/*
+{
+  Example new order JSON:
+    "costs": [
+        {
+            "name": "Bob",
+            "amount": 573
+        }, {
+            "name": "Jeremy",
+            "amount": 650
+        } , {
+            "name": "Coworker A",
+            "amount": 590
+        } , {
+            "name": "Coworker B",
+            "amount": 799
+        } , {
+            "name": "Coworker C",
+            "amount": 324
+        } , {
+            "name": "Coworker D",
+            "amount": 650
+        } ,{
+            "name": "Coworker E",
+            "amount": 1073
+        } 
+
+    ]
+}
+*/
