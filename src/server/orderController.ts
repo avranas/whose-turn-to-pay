@@ -25,6 +25,14 @@ function whoPaidIsInCosts(whoPaid: string, costs: Array<Cost>): boolean {
   return foundWhoPaid;
 }
 
+// Returns true if all costs are 0 or higher, false otherwise
+function costsAreNotNegative(costs: Array<Cost>): boolean {
+  for (let i = 0; i < costs.length; i++) {
+    if (costs[i].amount < 0) return false;
+  }
+  return true;
+}
+
 // Throw an error if the object doesn't exist
 // Sets res.locals.item equal to the retrieved item
 export const orderController: OrderController = {
@@ -108,6 +116,10 @@ export const orderController: OrderController = {
           who_paid + " is not included in the list of costs",
         );
       }
+      // Throw an error if one of the costs is negative
+      if (!costsAreNotNegative(costs)) {
+        throw createError(400, "All costs must be positive");
+      }
       const item: Item = {
         id: uuidv4(),
         time_created: Date.now(),
@@ -149,6 +161,9 @@ export const orderController: OrderController = {
       if (error !== "") {
         throw createError(400, "Error in the the request body: " + error);
       }
+      if (amount < 0) {
+        throw createError(400, "\"amount\" must not be negative");
+      }
       let updated = false;
       const newCosts = res.locals.item.costs.map((cost: Cost) => {
         if (cost.name === name) {
@@ -165,10 +180,7 @@ export const orderController: OrderController = {
         );
       }
       if (!updated) {
-        throw createError(
-          400,
-          "Unable to find anything to update",
-        );
+        throw createError(400, "Unable to find anything to update");
       }
       const params: DynamoDB.DocumentClient.UpdateItemInput = {
         TableName: tableName,
