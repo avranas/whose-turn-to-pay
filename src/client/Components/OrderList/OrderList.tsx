@@ -81,12 +81,12 @@ const OrderList = () => {
     }
     contactBackend();
   }, []);
-  console.log("orders", orders);
-  console.log("coworkerCostMap", coworkerCostMap);
-  console.log("coworkerTotalMap", coworkerTotalMap);
-  console.log("coworkerSpendMap", coworkerSpendMap);
-  console.log("coworkerDifferenceMap", coworkerDifferenceMap);
-  console.log("coworkerPayingOrder", coworkerPayingOrder);
+  // console.log("orders", orders);
+  // console.log("coworkerCostMap", coworkerCostMap);
+  // console.log("coworkerTotalMap", coworkerTotalMap);
+  // console.log("coworkerSpendMap", coworkerSpendMap);
+  // console.log("coworkerDifferenceMap", coworkerDifferenceMap);
+  // console.log("coworkerPayingOrder", coworkerPayingOrder);
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -98,6 +98,11 @@ const OrderList = () => {
         {orders == null ? (
           <p>Loading orders</p>
         ) : (
+
+
+          // Sort orders list by name alphabetically so it's the same every page load
+
+
           orders.map((order, i) => <Order key={"order-" + i} order={order} />)
         )}
       </ol>

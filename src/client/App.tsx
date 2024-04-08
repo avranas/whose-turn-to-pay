@@ -7,6 +7,7 @@ import "./App.css";
 const App = () => {
   return (
     <div>
+      <h1>Whose turn is it to pay?</h1>
       <NewOrder />
       <OrderList />
     </div>

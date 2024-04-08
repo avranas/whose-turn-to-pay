@@ -5,7 +5,7 @@ interface AddNewInputButtonProps {
   createNewCost: (amount: number) => void;
 }
 
-const AddNewInputButton = ({createNewCost}: AddNewInputButtonProps) => {
+const AddNewInputButton = ({ createNewCost }: AddNewInputButtonProps) => {
   function handleClick() {
     createNewCost(1);
   }

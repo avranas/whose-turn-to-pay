@@ -14,7 +14,7 @@ export interface OrderData {
   who_paid: string;
 }
 
-export interface Item extends OrderData{
+export interface Item extends OrderData {
   [key: string]: any;
 }
 
@@ -22,4 +22,3 @@ export interface Property {
   key: string;
   type: string;
 }
-

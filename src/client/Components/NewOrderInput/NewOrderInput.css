@@ -1,14 +1,14 @@
-
-.new-order-input, #add-new-input-button {
-  width: 6rem;
-  height: auto;
+.new-order-input,
+#add-new-input-button {
+  width: 10rem;
   border: solid;
-  padding: 1rem;
   border-radius: 0.25rem;
+  padding: 0.25rem;
+  flex: 0 0 auto;
 }
 
 .input-name {
-  width: auto;
+  display: flex;
 }
 
 .amount-input {
@@ -22,4 +22,42 @@
 
 #add-new-input-button:active {
   background-color: rgb(128, 128, 128);
+}
+
+.delete-input {
+  text-align: center;
+  border-radius: 0.5rem;
+  width: 1rem;
+  cursor: pointer;
+  color: red;
+}
+
+.delete-input:hover {
+  background-color: rgb(255, 238, 238);
+}
+
+.delete-input:active {
+  background-color: rgb(255, 154, 154);
+}
+
+.new-order-input-content {
+  padding: 1rem;
+  padding-top: 0;
+}
+
+.name-label {
+  text-align: center;
+  display: block;
+}
+.dollar-sign {
+  margin-right: 0.25rem;
+}
+
+.input-header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.who-paid-button {
+  cursor: pointer;
 }

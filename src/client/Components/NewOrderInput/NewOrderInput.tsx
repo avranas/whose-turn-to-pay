@@ -1,20 +1,62 @@
-import React, { useState } from "react";
+import React from "react";
 import "./NewOrderInput.css";
 
-export interface NewOrderInputProps {
+export interface NewOrderInputState {
+  amount: string;
   name: string;
+  id: string;
 }
 
-const NewOrderInput = ({ name }: NewOrderInputProps) => {
-  const [amount, setAmount] = useState("");
+export interface NewOrderInputProps {
+  index: number;
+  deleteInput: (index: number) => void;
+  updateState: (index: number, newState: NewOrderInputState) => void;
+  updateWhoPaid: (index: number) => void;
+  state: {
+    amount: string;
+    name: string;
+    id: string;
+  };
+}
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+const NewOrderInput = ({
+  index,
+  deleteInput,
+  state,
+  updateState,
+  updateWhoPaid,
+}: NewOrderInputProps) => {
+  function setName(newName: string) {
+    const newState = { ...state };
+    newState.name = newName;
+    updateState(index, newState);
+  }
+
+  function setAmount(newAmount: string) {
+    const newState = { ...state };
+    newState.amount = newAmount;
+    updateState(index, newState);
+  }
+
+  function handleDeleteClick() {
+    deleteInput(index);
+  }
+
+  function updateName(e: React.ChangeEvent<HTMLInputElement>) {
+    setName(e.target.value);
+  }
+
+  function handleWhoPaidChange() {
+    updateWhoPaid(index);
+  }
+
+  function updateAmount(e: React.ChangeEvent<HTMLInputElement>) {
     // Removes any character that isn't a number
     let input = e.target.value.replace(/[^0-9]/g, "");
     // Removes leading zeroes
     while (input[0] === "0" && input.length > 1) input = input.slice(1);
     if (input.length > 2) {
-      // Adds a decimal before the second digit 
+      // Adds a decimal before the second digit
       input = `${input.slice(0, -2)}.${input.slice(-2)}`;
     } else if (input.length == 1) {
       input = "0.0" + input;
@@ -22,14 +64,47 @@ const NewOrderInput = ({ name }: NewOrderInputProps) => {
       input = "0." + input;
     }
     setAmount(input);
-  };
+  }
 
   return (
     <div className="new-order-input">
-      <div className="input-name">
-      {name ? <label>{name}</label> : <input type="name" />}</div>
-      <div className="amount-input">
-      $<input type="text" value={amount} onChange={handleChange} />
+      <div className="input-header">
+        <div>
+        <input
+          alt="Who paid"
+          type="radio"
+          name="drone"
+          className="who-paid-button"
+          defaultChecked={index === 0}
+          onChange={handleWhoPaidChange}
+        />
+        Paid
+        </div>
+        <div className="delete-input" onClick={handleDeleteClick}>
+          x
+        </div>
+      </div>
+      <div className="new-order-input-content">
+        <label className="name-label">Name</label>
+        <div className="input-name">
+          <input
+            aria-label="Name field"
+            onChange={updateName}
+            className="name-input"
+            type="text"
+            value={state.name}
+          />
+        </div>
+        <div className="amount-input">
+          <div className="dollar-sign">$</div>
+          <input
+            aria-label="Cost field"
+            className="name-input"
+            type="text"
+            value={state.amount}
+            onChange={updateAmount}
+          />
+        </div>
       </div>
     </div>
   );

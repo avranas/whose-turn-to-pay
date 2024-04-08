@@ -162,7 +162,7 @@ export const orderController: OrderController = {
         throw createError(400, "Error in the the request body: " + error);
       }
       if (amount < 0) {
-        throw createError(400, "\"amount\" must not be negative");
+        throw createError(400, '"amount" must not be negative');
       }
       let updated = false;
       const newCosts = res.locals.item.costs.map((cost: Cost) => {

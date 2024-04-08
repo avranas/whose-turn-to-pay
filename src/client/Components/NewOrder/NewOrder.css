@@ -1,3 +1,14 @@
-#new-order {
+#new-order-content {
   display: flex;
+  width: 100%;
+  overflow-x: scroll;
+  height: 8rem;
+}
+
+#create-order-button {
+  cursor: pointer;
+}
+
+#missing-name-error {
+  color: red;
 }
