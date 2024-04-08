@@ -1,0 +1,25 @@
+
+.new-order-input, #add-new-input-button {
+  width: 6rem;
+  height: auto;
+  border: solid;
+  padding: 1rem;
+  border-radius: 0.25rem;
+}
+
+.input-name {
+  width: auto;
+}
+
+.amount-input {
+  display: flex;
+}
+
+#add-new-input-button:hover {
+  cursor: pointer;
+  background-color: rgb(208, 208, 208);
+}
+
+#add-new-input-button:active {
+  background-color: rgb(128, 128, 128);
+}

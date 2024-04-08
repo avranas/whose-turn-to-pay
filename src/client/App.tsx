@@ -1,24 +1,13 @@
-import axios from "axios";
-import React, { useEffect } from "react";
+import React from "react";
 import { createRoot } from "react-dom/client";
-import OrderList from "./Components/OrderList";
+import OrderList from "./Components/OrderList/OrderList";
+import NewOrder from "./Components/NewOrder/NewOrder";
+import "./App.css";
 
 const App = () => {
-  useEffect(() => {
-    async function contactBackend() {
-      try {
-        const res = await axios.get("/api/order");
-        console.log(res.data);
-      } catch (err) {
-        console.log(err);
-      }
-    }
-    contactBackend();
-  }, []);
-
   return (
     <div>
-      <h1>Hello world</h1>
+      <NewOrder />
       <OrderList />
     </div>
   );

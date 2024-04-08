@@ -1,7 +1,8 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { OrderData, Cost } from "../../types";
-import Order from "./Order";
+import { OrderData, Cost } from "../../../types";
+import Order from "../Order/Order";
+import "./OrderList.css";
 
 interface CoworkerCostMap {
   [key: string]: Array<number>;
