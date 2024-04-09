@@ -14,17 +14,18 @@ Input each person's name, and how much their order cost. Select which person pai
 
 View details of previous orders, including how much each person's order costs, and who paid.
 
-### Who's Paying?
+### Find Who's Turn To Pay
 
 Whoever is in the most debt is whose turn it is to pay. Their name will be displayed at the top of the screen, along with all other coworkers and their debt, or what they're owed.
 
 ## Assumptions
 
-1. Whoever's turn it is to buy coffee is determined by who has the greatest amount of debt, which is determined by the amount of money they have spent minus the total cost of all of their orders. The lower the value, the greater amount of debt.
-2. New people are allowed to participate
-3. Existing people don't have to keep participating
+1. Whoever's turn it is to pay is determined by who has the greatest amount of debt, which is determined by the amount of money they have spent minus the total cost of all of their orders. The lower the value, the greater amount of debt.
+2. New people are allowed to participate.
+3. Existing people don't have to keep participating.
 4. Anyone can pay for an order even if it's not their turn. If it's Bob's turn to pay on his birthday, someone else should treat him!
-5. This is designed for a small group of friends
+5. This is designed for a small group of friends: <20 people.
+6. There are no accounts and only a single list of orders.
 
 ## Still Want To Implement
 
