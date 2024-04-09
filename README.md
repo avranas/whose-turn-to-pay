@@ -27,9 +27,10 @@ Whoever is in the most debt is whose turn it is to pay for coffee. Their name wi
 3. Existing people don't have to keep participating
 4. Anyone can pay for an order even if it's not their turn. If it's Bob's turn to pay on his birthday, someone else should treat him!
 
-## Didn't have time to implement
+## Still want to implement
 1. Testing :(
 2. Frontend update order feature (there's support on the backend)
+3. Auto select whose turn it is on NewOrder component
 
 ## Technologies
 
