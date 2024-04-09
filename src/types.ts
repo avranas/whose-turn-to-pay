@@ -22,3 +22,24 @@ export interface Property {
   key: string;
   type: string;
 }
+
+export interface CostMap {
+  [key: string]: Array<number>;
+}
+
+export interface TotalMap {
+  [key: string]: number;
+}
+
+export interface DifferenceMap {
+  [key: string]: number;
+}
+
+export interface SpendMap {
+  [key: string]: number;
+}
+
+export interface Difference {
+  name: string;
+  amount: number;
+}

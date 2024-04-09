@@ -4,3 +4,7 @@ th {
   border: solid;
   padding: 0.25rem;
 }
+
+.blue-text {
+  color: blue;
+}
