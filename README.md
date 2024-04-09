@@ -26,6 +26,7 @@ Whoever is in the most debt is whose turn it is to pay for coffee. Their name wi
 2. New people are allowed to participate
 3. Existing people don't have to keep participating
 4. Anyone can pay for an order even if it's not their turn. If it's Bob's turn to pay on his birthday, someone else should treat him!
+5. This is designed for a small group of friends
 
 ## Still want to implement
 1. Testing :(
