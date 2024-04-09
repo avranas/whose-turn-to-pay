@@ -2,6 +2,7 @@ import React from "react";
 import { OrderData, TotalMap } from "../../../types";
 import "./OrderList.css";
 import { centsToUSD } from "../../util";
+import axios from "axios";
 
 interface OrderListProps {
   orders: OrderData[];
@@ -18,6 +19,21 @@ const OrderList = ({
   orderTotals,
   totalMap,
 }: OrderListProps) => {
+
+  async function deleteOrder(index: number) {
+    try {
+      console.log(index);
+      console.log(orders[index].id)
+      console.log(orders[index].who_paid)
+      const res = await axios.delete("/api/order/" + orders[index].id);
+      console.log(res.data);
+      window.location.reload();
+    } catch (err) {
+      console.log(err);
+    }
+
+  }
+
   return (
     <div>
       {
@@ -62,6 +78,7 @@ const OrderList = ({
                       return newField;
                     })}
                     <td>{centsToUSD(orderTotals[i])}</td>
+                    <td><button className="delete-button" onClick={() => deleteOrder(i)}>Delete order</button></td>
                   </tr>
                 );
               })}
@@ -74,7 +91,13 @@ const OrderList = ({
                     <td key={"total-" + i}>{centsToUSD(totalMap[name])}</td>
                   );
                 })}
-                <td></td>
+                <td>
+                  <strong>
+                    {centsToUSD(
+                      Object.values(totalMap).reduce((a, v) => a + v),
+                    )}
+                  </strong>
+                </td>
               </tr>
             </tbody>
           </table>

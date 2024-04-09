@@ -8,3 +8,7 @@ th {
 .blue-text {
   color: blue;
 }
+
+.delete-button {
+  cursor: pointer;
+}
