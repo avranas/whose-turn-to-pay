@@ -1,0 +1,6 @@
+td,
+th {
+  min-width: 5rem;
+  border: solid;
+  padding: 0.25rem;
+}

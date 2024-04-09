@@ -6,7 +6,7 @@ import AddNewInputButton from "../AddNewInputButton/AddNewInputButton";
 import "./NewOrder.css";
 import { v4 as uuidv4 } from "uuid";
 import axios, { AxiosError } from "axios";
-import {Cost} from "../../../types";
+import { Cost } from "../../../types";
 
 const NewOrder = () => {
   const [newOrderInputState, setNewOrderInputState] = useState<
@@ -37,7 +37,6 @@ const NewOrder = () => {
 
   async function createNewOrder() {
     try {
-      console.log(newOrderInputState[paidIndex].name);
       const duplicateCheck = new Set();
       for (let i = 0; i < newOrderInputState.length; i++) {
         const name = newOrderInputState[i].name;
@@ -52,25 +51,23 @@ const NewOrder = () => {
         }
       }
       setErrorMessage("");
-      console.log("newOrderInputState", newOrderInputState);
-      const costs: Cost[] = newOrderInputState.map(input => {
+      const costs: Cost[] = newOrderInputState.map((input) => {
         return {
           name: input.name,
-          amount: Number(input.amount)
+          amount: Number(input.amount.replace(".", "")),
         };
       });
-      const res = await axios.post("/api/order", {
+      await axios.post("/api/order", {
         costs: costs,
         who_paid: newOrderInputState[paidIndex].name,
       });
-      console.log(res);
     } catch (err) {
-      const msg = err instanceof AxiosError && typeof err.response?.data === "string"
-        ? err.response.data
-        : "An unknown error occurred";
+      const msg =
+        err instanceof AxiosError && typeof err.response?.data === "string"
+          ? err.response.data
+          : "An unknown error occurred";
       setErrorMessage(msg);
     }
-    
   }
 
   function updateWhoPaid(index: number) {
@@ -83,7 +80,7 @@ const NewOrder = () => {
 
   return (
     <div>
-      <p>Create a new order</p>
+      <h2>Create a new order</h2>
       <div id="new-order-content">
         {newOrderInputState.map((state, i) => {
           return (

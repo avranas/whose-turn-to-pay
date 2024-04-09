@@ -1,66 +1,76 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { OrderData, Cost } from "../../../types";
-import Order from "../Order/Order";
 import "./OrderList.css";
+import { centsToUSD } from "../../util";
 
-interface CoworkerCostMap {
+interface CostMap {
   [key: string]: Array<number>;
 }
 
-interface CoworkerTotalMap {
+interface TotalMap {
   [key: string]: number;
 }
 
-interface CoworkerDifference {
+interface DifferenceMap {
+  [key: string]: number;
+}
+
+interface SpendMap {
+  [key: string]: number;
+}
+
+interface Difference {
   name: string;
   amount: number;
 }
 
-interface CoworkerDifferenceMap extends CoworkerTotalMap {}
-interface CoworkerSpendMap extends CoworkerTotalMap {}
-
 const OrderList = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [orders, setOrders] = useState<OrderData[] | null>(null);
-  const [coworkerCostMap, setCoworkerCostMap] =
-    useState<CoworkerCostMap | null>(null);
-  const [coworkerTotalMap, setCoworkerTotalMap] =
-    useState<CoworkerTotalMap | null>(null);
-  const [coworkerSpendMap, setCoworkerSpendMap] =
-    useState<CoworkerSpendMap | null>(null);
-  const [coworkerDifferenceMap, setCoworkerDifferenceMap] =
-    useState<CoworkerDifferenceMap | null>(null);
-  const [coworkerPayingOrder, setCoworkerPayingOrder] =
-    useState<Array<CoworkerDifference> | null>(null);
+  const [costMap, setCostMap] = useState<CostMap | null>(null);
+  const [totalMap, setTotalMap] = useState<TotalMap | null>(null);
+  const [spendMap, setSpendMap] = useState<SpendMap | null>(null);
+  const [differenceMap, setDifferenceMap] = useState<DifferenceMap | null>(
+    null,
+  );
+  const [payingOrder, setPayingOrder] = useState<Array<Difference> | null>(
+    null,
+  );
+  const [sortedNames, setSortedNames] = useState<string[] | null>(null);
+  const [orderCosts, setOrderCosts] = useState<
+    { [key: string]: number }[] | null
+  >(null);
+  const [orderTotals, setOrderTotals] = useState<number[] | null>(null);
+
   useEffect(() => {
     async function contactBackend() {
       try {
         const res = await axios.get("/api/order");
         const orders: Array<OrderData> = res.data;
-        const costMap: CoworkerCostMap = {};
-        const totalMap: CoworkerTotalMap = {};
-        const spendMap: CoworkerSpendMap = {};
+        const newCostMap: CostMap = {};
+        const newTotalMap: TotalMap = {};
+        const newSpendMap: SpendMap = {};
         orders.forEach(({ costs, who_paid }) => {
           let orderTotal = 0;
           costs.forEach((cost: Cost) => {
-            if (cost.name in costMap) {
-              costMap[cost.name].push(cost.amount);
-              totalMap[cost.name] += cost.amount;
+            if (cost.name in newCostMap) {
+              newCostMap[cost.name].push(cost.amount);
+              newTotalMap[cost.name] += cost.amount;
             } else {
-              costMap[cost.name] = [cost.amount];
-              totalMap[cost.name] = cost.amount;
+              newCostMap[cost.name] = [cost.amount];
+              newTotalMap[cost.name] = cost.amount;
             }
-            if (!(cost.name in spendMap)) spendMap[cost.name] = 0;
+            if (!(cost.name in newSpendMap)) newSpendMap[cost.name] = 0;
             orderTotal += cost.amount;
           });
-          if (who_paid in spendMap) spendMap[who_paid] += orderTotal;
+          if (who_paid in newSpendMap) newSpendMap[who_paid] += orderTotal;
         });
-        const diffMap: CoworkerSpendMap = {};
-        Object.keys(spendMap).forEach((key) => {
-          diffMap[key] = spendMap[key] - totalMap[key];
+        const newDifferenceMap: DifferenceMap = {};
+        Object.keys(newSpendMap).forEach((key) => {
+          newDifferenceMap[key] = newSpendMap[key] - newTotalMap[key];
         });
-        const payingOrder = Object.entries(diffMap)
+        const newPayingOrder = Object.entries(newDifferenceMap)
           .sort((a, b) => a[1] - b[1])
           .map((coworker) => {
             return {
@@ -68,11 +78,30 @@ const OrderList = () => {
               amount: coworker[1],
             };
           });
-        setCoworkerPayingOrder(payingOrder);
-        setCoworkerDifferenceMap(diffMap);
-        setCoworkerSpendMap(spendMap);
-        setCoworkerCostMap(costMap);
-        setCoworkerTotalMap(totalMap);
+        const newSortedNames = newPayingOrder
+          .sort((a, b) => a.name.localeCompare(b.name))
+          .map((v) => v.name);
+        const newOrderCosts = orders.map((order) => {
+          const newMap: { [key: string]: number } = {};
+          order.costs.forEach((c) => {
+            newMap[c.name] = c.amount;
+          });
+          return newMap;
+        });
+
+        const newOrderTotals = orders.map((order) => {
+          return order.costs.reduce((accumulator, currentItem) => {
+            return accumulator + currentItem.amount;
+          }, 0);
+        });
+        setOrderTotals(newOrderTotals);
+        setOrderCosts(newOrderCosts);
+        setSortedNames(newSortedNames);
+        setPayingOrder(newPayingOrder);
+        setDifferenceMap(newDifferenceMap);
+        setSpendMap(newSpendMap);
+        setCostMap(newCostMap);
+        setTotalMap(newTotalMap);
         setOrders(orders);
         setIsLoading(false);
       } catch (err) {
@@ -81,31 +110,75 @@ const OrderList = () => {
     }
     contactBackend();
   }, []);
-  // console.log("orders", orders);
-  // console.log("coworkerCostMap", coworkerCostMap);
-  // console.log("coworkerTotalMap", coworkerTotalMap);
-  // console.log("coworkerSpendMap", coworkerSpendMap);
-  // console.log("coworkerDifferenceMap", coworkerDifferenceMap);
-  // console.log("coworkerPayingOrder", coworkerPayingOrder);
+  console.log("orders", orders);
+  console.log("costMap", costMap);
+  console.log("totalMap", totalMap);
+  console.log("spendMap", spendMap);
+  console.log("differenceMap", differenceMap);
+  console.log("payingOrder", payingOrder);
+  console.log("orderTotals", orderTotals);
 
   if (isLoading) {
     return <div>Loading...</div>;
   }
   return (
     <div>
-      <h2>Order List</h2>
-      <ol>
-        {orders == null ? (
-          <p>Loading orders</p>
-        ) : (
-
-
-          // Sort orders list by name alphabetically so it's the same every page load
-
-
-          orders.map((order, i) => <Order key={"order-" + i} order={order} />)
-        )}
-      </ol>
+      {!orders ||
+      !sortedNames ||
+      !spendMap ||
+      !orderCosts ||
+      !orderTotals ||
+      !totalMap ? (
+        <p>Loading orders</p>
+      ) : (
+        <div>
+          <h2>Order history</h2>
+          <table>
+            <thead>
+              <tr>
+                <th></th>
+                {sortedNames.map((name) => {
+                  return <th>{name}</th>;
+                })}
+                <th>Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              {orderCosts.map((order, i) => {
+                return (
+                  <tr>
+                    <td>Order {orderCosts.length - i}</td>
+                    {sortedNames.map((name) => {
+                      const newField =
+                        orders[i].who_paid === name ? (
+                          <td style={{ backgroundColor: "skyBlue" }}>
+                            {centsToUSD(order[name])}
+                          </td>
+                        ) : (
+                          <td>{order[name] ? centsToUSD(order[name]) : 0}</td>
+                        );
+                      if (orders[i].who_paid) {
+                        newField;
+                      }
+                      return newField;
+                    })}
+                    <td>{centsToUSD(orderTotals[i])}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+            <tfoot>
+              <td>
+                <strong>Total</strong>
+              </td>
+              {sortedNames.map((name) => {
+                return <th>{centsToUSD(totalMap[name])}</th>;
+              })}
+              <td></td>
+            </tfoot>
+          </table>
+        </div>
+      )}
     </div>
   );
 };

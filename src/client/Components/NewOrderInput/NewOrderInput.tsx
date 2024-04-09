@@ -70,15 +70,15 @@ const NewOrderInput = ({
     <div className="new-order-input">
       <div className="input-header">
         <div>
-        <input
-          alt="Who paid"
-          type="radio"
-          name="drone"
-          className="who-paid-button"
-          defaultChecked={index === 0}
-          onChange={handleWhoPaidChange}
-        />
-        Paid
+          <input
+            alt="Who paid"
+            type="radio"
+            name="drone"
+            className="who-paid-button"
+            defaultChecked={index === 0}
+            onChange={handleWhoPaidChange}
+          />
+          Paid
         </div>
         <div className="delete-input" onClick={handleDeleteClick}>
           x
