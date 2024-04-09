@@ -18,21 +18,24 @@ th {
 }
 
 @media only screen and (max-width: 1024px) {
-  td, th {
+  td,
+  th {
     min-width: 3rem;
     font-size: 12px;
   }
 }
 
 @media only screen and (max-width: 770px) {
-  td, th {
+  td,
+  th {
     min-width: 2rem;
     font-size: 10px;
   }
 }
 
 @media only screen and (max-width: 512px) {
-  td, th {
+  td,
+  th {
     min-width: 1.5rem;
     font-size: 8px;
   }

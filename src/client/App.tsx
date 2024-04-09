@@ -81,7 +81,7 @@ const App = () => {
     setSpendMap(newSpendMap);
     setTotalMap(newTotalMap);
     setOrders(orders);
-  };
+  }
 
   async function getOrders() {
     try {
