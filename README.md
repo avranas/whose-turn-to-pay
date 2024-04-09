@@ -29,7 +29,6 @@ Whoever is in the most debt is whose turn it is to pay for coffee. Their name wi
 ## Didn't have time to implement
 1. Testing :(
 2. Frontend update order feature (there's support on the backend)
-3. Responsive design
 
 ## Technologies
 
