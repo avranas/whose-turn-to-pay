@@ -9,7 +9,7 @@ import axios, { AxiosError } from "axios";
 import { Cost } from "../../../types";
 
 interface NewOrderProps {
-  sortedNames: string[] | null
+  sortedNames: string[]
 }
 
 const NewOrder = ({sortedNames}: NewOrderProps) => {
@@ -80,7 +80,7 @@ const NewOrder = ({sortedNames}: NewOrderProps) => {
   }
 
   useEffect(() => {
-    if (sortedNames) {
+    if (sortedNames.length > 0) {
       sortedNames.forEach(name => createNewCost(1, name));
     } else {
       createNewCost(2);

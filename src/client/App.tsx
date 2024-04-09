@@ -107,15 +107,15 @@ const App = () => {
   return (
     <div>
       <h1>Whose turn is it to pay?</h1>
-      {
+      {orders.length > 0 && (
         <PayingOrder
           payingOrder={payingOrder}
           spendMap={spendMap}
           totalMap={totalMap}
         />
-      }
+      )}
       {<NewOrder sortedNames={sortedNames} />}
-      {
+      {orders.length > 0 && (
         <OrderList
           orders={orders}
           sortedNames={sortedNames}
@@ -123,7 +123,7 @@ const App = () => {
           orderTotals={orderTotals}
           totalMap={totalMap}
         />
-      }
+      )}
     </div>
   );
 };
