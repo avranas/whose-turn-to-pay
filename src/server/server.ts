@@ -17,7 +17,7 @@ const apiRouter = express.Router();
 const app = express();
 
 // Serve static files from the React frontend app
-app.use(express.static(path.join(__dirname, "dist")));
+app.use(express.static(path.join(__dirname, "../../dist")));
 
 app.use(bodyParser.json());
 
@@ -49,7 +49,7 @@ app.use((err: HttpError, req: Request, res: Response, next: NextFunction) => {
 // Serves React app on all other routes. This must be the last route defined
 if (nodeEnv === "production") {
   app.get("*", (req, res) => {
-    res.sendFile(path.join(__dirname, "../dist/index.html"));
+    res.sendFile(path.join(__dirname, "../../dist/index.html"));
   });
 }
 

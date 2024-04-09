@@ -1,3 +1,7 @@
 .env
 node_modules/
+build/
 dist/
+whose-turn-to-pay/
+whose-turn-to-pay.zip
+.DS_Store

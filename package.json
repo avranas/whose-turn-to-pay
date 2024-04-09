@@ -6,8 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "webpack-dev-server --open & nodemon src/server/server.ts",
-    "start": "ts-node src/server/server.ts",
     "build": "webpack --config ./webpack.config.js",
+    "start": "ts-node src/server/server.ts",
     "prettier": "npx prettier . --write"
   },
   "author": "Alex Vranas",
