@@ -1,10 +1,7 @@
 import React from "react";
 import "./PayingOrder.css";
 import {
-  CostMap,
   Difference,
-  DifferenceMap,
-  OrderData,
   SpendMap,
   TotalMap,
 } from "../../../types";
@@ -21,7 +18,7 @@ const PayingOrder = ({ payingOrder, spendMap, totalMap }: PayingOrderProps) => {
     <div>
       <h2 id="turn-notice">It's {payingOrder[0].name}'s turn!</h2>
       {payingOrder.map((person, i) => {
-        let message = `${person.name} ordered: ${centsToUSD(totalMap[person.name])} in coffee, spent: ${centsToUSD(spendMap[person.name])}, and is ${centsToUSD(Math.abs(person.amount))}`;
+        let message = `${person.name} ordered ${centsToUSD(totalMap[person.name])} in coffee, spent ${centsToUSD(spendMap[person.name])}, and is ${centsToUSD(Math.abs(person.amount))}`;
         if (person.amount < 0) {
           message += " in debt.";
         } else if (person.amount > 0) {

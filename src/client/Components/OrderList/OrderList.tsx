@@ -1,6 +1,5 @@
-import axios from "axios";
-import React, { useEffect, useState } from "react";
-import { OrderData, Cost, SpendMap, TotalMap, CostMap } from "../../../types";
+import React from "react";
+import { OrderData, TotalMap } from "../../../types";
 import "./OrderList.css";
 import { centsToUSD } from "../../util";
 
@@ -43,7 +42,7 @@ const OrderList = ({
                 return (
                   <tr key={"order-row-" + i}>
                     <td>Order {orderCosts.length - i}</td>
-                    {sortedNames.map((name, i) => {
+                    {sortedNames.map((name) => {
                       const newField =
                         orders[i].who_paid === name ? (
                           <td

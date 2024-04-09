@@ -8,7 +8,11 @@ import { v4 as uuidv4 } from "uuid";
 import axios, { AxiosError } from "axios";
 import { Cost } from "../../../types";
 
-const NewOrder = () => {
+interface NewOrderProps {
+  sortedNames: string[] | null
+}
+
+const NewOrder = ({sortedNames}: NewOrderProps) => {
   const [newOrderInputState, setNewOrderInputState] = useState<
     NewOrderInputState[]
   >([]);
@@ -27,10 +31,10 @@ const NewOrder = () => {
     });
   }
 
-  function createNewCost(amount: number) {
+  function createNewCost(amount: number, newName = "") {
     const newElements: NewOrderInputState[] = [];
     for (let i = 0; i < amount; i++) {
-      newElements.push({ name: "", amount: "0", id: uuidv4() });
+      newElements.push({ name: newName, amount: "0", id: uuidv4() });
     }
     setNewOrderInputState((prev) => prev.concat(newElements));
   }
@@ -61,6 +65,7 @@ const NewOrder = () => {
         costs: costs,
         who_paid: newOrderInputState[paidIndex].name,
       });
+      window.location.reload();
     } catch (err) {
       const msg =
         err instanceof AxiosError && typeof err.response?.data === "string"
@@ -75,7 +80,11 @@ const NewOrder = () => {
   }
 
   useEffect(() => {
-    createNewCost(2);
+    if (sortedNames) {
+      sortedNames.forEach(name => createNewCost(1, name));
+    } else {
+      createNewCost(2);
+    }
   }, []);
 
   return (

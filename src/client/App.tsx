@@ -103,7 +103,11 @@ const App = () => {
           totalMap={totalMap}
         />
       )}
-      <NewOrder />
+      {
+        sortedNames &&
+        <NewOrder sortedNames={sortedNames} />
+      }
+
       {!orders || !sortedNames || !orderCosts || !orderTotals || !totalMap ? (
         <p>Loading...</p>
       ) : (
