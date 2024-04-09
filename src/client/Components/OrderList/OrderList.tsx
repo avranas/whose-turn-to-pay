@@ -57,7 +57,7 @@ const OrderList = ({
               {orderCosts.map((order, i) => {
                 return (
                   <tr key={"order-row-" + i}>
-                    <td>Order {orderCosts.length - i}</td>
+                    <td>{orderCosts.length - i}</td>
                     {sortedNames.map((name) => {
                       const newField =
                         orders[i].who_paid === name ? (
@@ -78,7 +78,7 @@ const OrderList = ({
                       return newField;
                     })}
                     <td>{centsToUSD(orderTotals[i])}</td>
-                    <td><button className="delete-button" onClick={() => deleteOrder(i)}>Delete order</button></td>
+                    <td><button className="delete-button" onClick={() => deleteOrder(i)}>Delete</button></td>
                   </tr>
                 );
               })}

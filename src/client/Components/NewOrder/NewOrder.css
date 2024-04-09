@@ -1,8 +1,7 @@
 #new-order-content {
   display: flex;
-  width: 100%;
+  width: auto;
   overflow-x: scroll;
-  height: 8rem;
 }
 
 #create-order-button {
@@ -11,4 +10,34 @@
 
 #missing-name-error {
   color: red;
+}
+
+@media only screen and (max-width: 1024px) {
+  .new-order-input {
+    width: 8rem;
+    font-size: 12px;
+  }
+  input {
+    font-size: 12px;
+  }
+}
+
+@media only screen and (max-width: 770px) {
+  .new-order-input {
+    width: 6rem;
+    font-size: 10px;
+  }
+  input {
+    font-size: 10px;
+  }
+}
+
+@media only screen and (max-width: 512px) {
+  .new-order-input {
+    width: 4rem;
+    font-size: 8px;
+  }
+  input {
+    font-size: 8px;
+  }
 }
