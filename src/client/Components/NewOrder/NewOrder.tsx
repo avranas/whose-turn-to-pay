@@ -57,7 +57,8 @@ const NewOrder = ({sortedNames}: NewOrderProps) => {
       setErrorMessage("");
       const costs: Cost[] = newOrderInputState.map((input) => {
         return {
-          name: input.name,
+          // Remove whitespace from front and back of inputted string
+          name: input.name.trim(),
           amount: Number(input.amount.replace(".", "")),
         };
       });
