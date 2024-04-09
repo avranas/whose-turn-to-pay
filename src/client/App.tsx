@@ -91,26 +91,31 @@ const App = () => {
     contactBackend();
   }, []);
 
+  if (
+    !payingOrder ||
+    !spendMap ||
+    !totalMap ||
+    !orders ||
+    !sortedNames ||
+    !orderCosts ||
+    !orderTotals ||
+    !totalMap ||
+    !sortedNames
+  )
+    return <p>Loading...</p>;
+
   return (
     <div>
       <h1>Whose turn is it to pay?</h1>
-      {!payingOrder || !spendMap || !totalMap ? (
-        <p>Loading...</p>
-      ) : (
+      {
         <PayingOrder
           payingOrder={payingOrder}
           spendMap={spendMap}
           totalMap={totalMap}
         />
-      )}
-      {
-        sortedNames &&
-        <NewOrder sortedNames={sortedNames} />
       }
-
-      {!orders || !sortedNames || !orderCosts || !orderTotals || !totalMap ? (
-        <p>Loading...</p>
-      ) : (
+      {<NewOrder sortedNames={sortedNames} />}
+      {
         <OrderList
           orders={orders}
           sortedNames={sortedNames}
@@ -118,7 +123,7 @@ const App = () => {
           orderTotals={orderTotals}
           totalMap={totalMap}
         />
-      )}
+      }
     </div>
   );
 };
