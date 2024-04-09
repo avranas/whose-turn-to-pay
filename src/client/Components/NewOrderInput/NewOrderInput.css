@@ -1,10 +1,13 @@
-.new-order-input,
-#add-new-input-button {
+.new-order-input {
   width: 10rem;
   border: solid;
   border-radius: 0.25rem;
   padding: 0.25rem;
   flex: 0 0 auto;
+}
+#add-new-input-button {
+  min-width: 10rem;
+  padding: 0.25rem;
 }
 
 .input-name {
@@ -15,13 +18,13 @@
   display: flex;
 }
 
-#add-new-input-button:hover {
+.important-button:hover {
   cursor: pointer;
-  background-color: rgb(208, 208, 208);
+  background-color: rgb(168, 188, 255);
 }
 
-#add-new-input-button:active {
-  background-color: rgb(128, 128, 128);
+.important-button:active {
+  background-color: rgb(77, 86, 218);
 }
 
 .delete-input {

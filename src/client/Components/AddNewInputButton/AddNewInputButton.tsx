@@ -5,13 +5,13 @@ interface AddNewInputButtonProps {
   createNewCost: (amount: number) => void;
 }
 
-const AddNewInputButton = ({ createNewCost }: AddNewInputButtonProps) => {
+const AddNewInputButton: React.FC<AddNewInputButtonProps> = ({ createNewCost }) => {
   function handleClick() {
     createNewCost(1);
   }
   return (
-    <button id="add-new-input-button" onClick={handleClick}>
-      +
+    <button className="important-button" id="add-new-input-button" onClick={handleClick}>
+      Add new person
     </button>
   );
 };

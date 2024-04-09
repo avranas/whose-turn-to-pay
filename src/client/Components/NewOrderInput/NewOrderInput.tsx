@@ -1,7 +1,7 @@
 import React from "react";
 import "./NewOrderInput.css";
 
-export interface NewOrderInputState {
+export interface InputState {
   amount: string;
   name: string;
   id: string;
@@ -10,7 +10,7 @@ export interface NewOrderInputState {
 export interface NewOrderInputProps {
   index: number;
   deleteInput: (index: number) => void;
-  updateState: (index: number, newState: NewOrderInputState) => void;
+  updateState: (index: number, newState: InputState) => void;
   updateWhoPaid: (index: number) => void;
   state: {
     amount: string;
@@ -19,13 +19,13 @@ export interface NewOrderInputProps {
   };
 }
 
-const NewOrderInput = ({
+const NewOrderInput: React.FC<NewOrderInputProps> = ({
   index,
   deleteInput,
   state,
   updateState,
   updateWhoPaid,
-}: NewOrderInputProps) => {
+}) => {
   function setName(newName: string) {
     const newState = { ...state };
     newState.name = newName;

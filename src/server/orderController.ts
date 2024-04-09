@@ -67,10 +67,10 @@ export const orderController: OrderController = {
         TableName: tableName,
       };
       const data = await db.scan(params).promise();
+      // TODO: There's a dynamo method for sort.
       if (data.Items) {
         data.Items = data.Items.sort((a, b) => b.time_created - a.time_created);
       }
-
       res.locals.orders = data.Items;
       return next();
     } catch (err) {

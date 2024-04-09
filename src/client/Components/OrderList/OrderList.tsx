@@ -10,29 +10,26 @@ interface OrderListProps {
   orderCosts: { [key: string]: number }[];
   orderTotals: number[];
   totalMap: TotalMap;
+  updateOrders: () => void;
 }
 
-const OrderList = ({
+const OrderList: React.FC<OrderListProps> = ({
   orders,
   sortedNames,
   orderCosts,
   orderTotals,
   totalMap,
+  updateOrders,
 }: OrderListProps) => {
-
   async function deleteOrder(index: number) {
     try {
-      console.log(index);
-      console.log(orders[index].id)
-      console.log(orders[index].who_paid)
       const res = await axios.delete("/api/order/" + orders[index].id);
-      console.log(res.data);
-      window.location.reload();
+      updateOrders();
     } catch (err) {
       console.log(err);
     }
-
   }
+  console.log("orders", orders);
 
   return (
     <div>
@@ -50,14 +47,14 @@ const OrderList = ({
                 {sortedNames.map((name, i) => {
                   return <th key={"order-col-" + i}>{name}</th>;
                 })}
-                <th>Total</th>
+                <th>Order Total</th>
               </tr>
             </thead>
             <tbody>
               {orderCosts.map((order, i) => {
                 return (
                   <tr key={"order-row-" + i}>
-                    <td>{orderCosts.length - i}</td>
+                    <td>Order#{orderCosts.length - i}</td>
                     {sortedNames.map((name) => {
                       const newField =
                         orders[i].who_paid === name ? (
@@ -78,13 +75,20 @@ const OrderList = ({
                       return newField;
                     })}
                     <td>{centsToUSD(orderTotals[i])}</td>
-                    <td><button className="delete-button" onClick={() => deleteOrder(i)}>Delete</button></td>
+                    <td className="hide-border">
+                      <button
+                        className="important-button delete-button"
+                        onClick={() => deleteOrder(i)}
+                      >
+                        Delete
+                      </button>
+                    </td>
                   </tr>
                 );
               })}
               <tr>
                 <td>
-                  <strong>Total</strong>
+                  <strong>Total Item Cost</strong>
                 </td>
                 {sortedNames.map((name, i) => {
                   return (

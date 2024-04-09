@@ -38,7 +38,6 @@ apiRouter.get("/", (req: Request, res: Response) => {
   return res.send("Hello World!");
 });
 
-// eslint-disable-next-line
 app.use((err: HttpError, req: Request, res: Response, next: NextFunction) => {
   if (nodeEnv === "development") {
     console.log(err);

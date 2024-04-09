@@ -1,10 +1,6 @@
 import React from "react";
 import "./PayingOrder.css";
-import {
-  Difference,
-  SpendMap,
-  TotalMap,
-} from "../../../types";
+import { Difference, SpendMap, TotalMap } from "../../../types";
 import { centsToUSD } from "../../util";
 
 interface PayingOrderProps {
@@ -13,7 +9,11 @@ interface PayingOrderProps {
   totalMap: TotalMap;
 }
 
-const PayingOrder = ({ payingOrder, spendMap, totalMap }: PayingOrderProps) => {
+const PayingOrder: React.FC<PayingOrderProps> = ({
+  payingOrder,
+  spendMap,
+  totalMap,
+}) => {
   return (
     <div>
       <h2 id="turn-notice">It's {payingOrder[0].name}'s turn!</h2>

@@ -25,6 +25,7 @@ Whoever is in the most debt is whose turn it is to pay for coffee. Their name wi
 1. Whomever's turn it is to buy coffee is determined by who is in the most amount of debt, which is determined by the amount of money they have spent minus the total cost of all of their orders. The lower the value, the greater amount of debt.
 2. New people are allowed to participate
 3. Existing people don't have to keep participating
+4. Anyone can pay for an order even if it's not their turn. If it's Bob's turn to pay on his birthday, someone else should treat him!
 
 ## Didn't have time to implement
 1. Testing :(

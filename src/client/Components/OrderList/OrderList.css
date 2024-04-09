@@ -13,6 +13,10 @@ th {
   cursor: pointer;
 }
 
+.hide-border {
+  border: none;
+}
+
 @media only screen and (max-width: 1024px) {
   td, th {
     min-width: 3rem;
